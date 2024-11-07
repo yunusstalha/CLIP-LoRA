@@ -134,7 +134,7 @@ def apply_lora(args, clip_model):
     return list_lora_layers
 
 
-def save_lora(args, list_lora_layers):
+def save_lora(args, list_lora_layers, iteration):
     weights = {}
     for i, layer in enumerate(list_lora_layers):
         layer_weights = {}
@@ -176,10 +176,10 @@ def save_lora(args, list_lora_layers):
 
     # to manage names like ViT-B/16
     backbone = args.backbone.replace('/', '').replace('-', '').lower()
-    save_dir = f'{args.save_path}/{backbone}/{args.dataset}/{args.shots}shots/seed{args.seed}'
+    save_dir = f'{args.save_path}/{backbone}/{args.seed}'
     os.makedirs(save_dir, exist_ok=True)
 
-    save_path = f'{save_dir}/{args.filename}.pt'
+    save_path = f'{save_dir}/{args.filename}_{iteration}.pt'
     torch.save(save_data, save_path)
     print(f'LoRA weights saved to {save_path}')
 
