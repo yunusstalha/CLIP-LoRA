@@ -184,11 +184,9 @@ def save_lora(args, list_lora_layers, iteration):
     print(f'LoRA weights saved to {save_path}')
 
 
-def load_lora(args, list_lora_layers):
+def load_lora(args, load_path, list_lora_layers):
     # to manage names like ViT-B/16
     backbone = args.backbone.replace('/', '').replace('-', '').lower()
-    load_path = f'{args.save_path}/{backbone}/{args.dataset}/{args.shots}shots/seed{args.seed}/{args.filename}.pt'
-
     if not os.path.exists(load_path):
         raise FileNotFoundError(f'File {load_path} does not exist.')
 

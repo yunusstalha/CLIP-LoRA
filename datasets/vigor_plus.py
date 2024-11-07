@@ -4,7 +4,7 @@ from torch.utils.data import Dataset
 from PIL import Image
 
 class VigorPlus(Dataset):
-    def __init__(self, dataset_root, cities_to_include, transform=None, val=False):
+    def __init__(self, dataset_root, cities_to_include, transform=None, val=False, is_satellite=True):
         """
         Args:
             dataset_root (str): Root directory of the dataset containing city folders.
@@ -18,8 +18,12 @@ class VigorPlus(Dataset):
         
         for city in self.cities:
             city_folder = os.path.join(self.dataset_root, city)
-            images_folder = os.path.join(city_folder, 'satellite')  # Adjust the folder name if different
-            csv_file = os.path.join(city_folder, 'satellite_captions.csv')  # Adjust the CSV file name if different
+            if is_satellite:
+                images_folder = os.path.join(city_folder, 'satellite')  # Adjust the folder name if different
+                csv_file = os.path.join(city_folder, 'satellite_captions.csv')  # Adjust the CSV file name if different
+            else:
+                images_folder = os.path.join(city_folder, 'panorama')
+                csv_file = os.path.join(city_folder, 'panorama_captions.csv')
             
             # Read the CSV file
             if val:
@@ -56,7 +60,7 @@ if __name__ == "__main__":
     import torch
 
     # Function to plot and save images with captions from a DataLoader
-    def plot_images_with_captions_from_loader(data_loader, num_samples=10, save_path='sample_images_from_loader.png'):
+    def plot_images_with_captions_from_loader(data_loader, num_samples=5, save_path='sample_images_from_loader.png'):
         # Select a batch of images and captions
         for images, captions in data_loader:
             # Choose random indices from the batch
@@ -64,7 +68,8 @@ if __name__ == "__main__":
             indices = random.sample(range(len(images)), num_samples)
 
             # Create a figure to plot the images
-            fig, axes = plt.subplots(1, num_samples, figsize=(20, 10))
+            fig, axes = plt.subplots(1, num_samples, figsize=(num_samples * 4, 3))  # Adjust figure width per image
+            plt.subplots_adjust(wspace=0.3)  # Adjust horizontal spacing between images
 
             for i, idx in enumerate(indices):
                 image = images[idx]
@@ -77,13 +82,16 @@ if __name__ == "__main__":
                 image = (image - image.min()) / (image.max() - image.min())
 
                 # Wrap long captions for display
-                wrapped_caption = "\n".join(textwrap.wrap(caption, width=40))
+                wrapped_caption = "\n".join(textwrap.wrap(caption, width=60))  # Adjust width to limit text lines
+
 
                 # Plot image and caption
                 ax = axes[i]
                 ax.imshow(image)
-                ax.set_title(wrapped_caption, fontsize=8)
                 ax.axis('off')
+                ax.text(0.5, -0.5, wrapped_caption, ha='center', fontsize=8, transform=ax.transAxes)  # Move caption below
+                ax.set_title("")  # Remove the title if you use this approach
+
 
             # Save the plot
             plt.tight_layout()
@@ -97,13 +105,13 @@ if __name__ == "__main__":
     from torchvision import transforms
 
     transform = transforms.Compose([
-        transforms.Resize((224, 224)),
+        transforms.Resize((256, 512)),
         transforms.ToTensor(),
     ])
 
     dataset_root = '/home/erzurumlu.1/yunus/research_drive/data/VIGOR'
     cities_to_include = ['NewYork', 'Chicago']
-    dataset = VigorPlus(dataset_root, cities_to_include, transform=transform)
+    dataset = VigorPlus(dataset_root, cities_to_include, transform=transform, is_satellite=False)
     print(f"Number of samples in the dataset: {len(dataset)}")
     sample_image, sample_caption = dataset[0]
     print(f"Sample image size: {sample_image.size()}")
