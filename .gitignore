@@ -8,7 +8,6 @@ clip/__pycache__/__init__.cpython-310.pyc
 clip/__pycache__/clip.cpython-310.pyc
 clip/__pycache__/model.cpython-310.pyc
 clip/__pycache__/simple_tokenizer.cpython-310.pyc
-datasets/vigor_plus.py
 datasets/__pycache__/__init__.cpython-310.pyc
 datasets/__pycache__/caltech101.cpython-310.pyc
 datasets/__pycache__/dtd.cpython-310.pyc
@@ -104,3 +103,8 @@ visualization_27250_1.png
 visualization_27250_2.png
 visualization_27250_3.png
 visualization_27250_4.png
+visualization_27500_0.png
+visualization_27500_1.png
+visualization_27500_2.png
+visualization_27500_3.png
+visualization_27500_4.png
